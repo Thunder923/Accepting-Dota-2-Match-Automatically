@@ -5,14 +5,13 @@ from py2 import PressKey,ReleaseKey,W,S,A,D,C,Enter
 import keyboard
 import sys
 from PIL import ImageGrab
+#time.sleep(2)
 th1 = cv2.imread('matchimage1.png')
+#th1 = cv2.Canny(newimg,threshold1 =200,threshold2 = 300)
+#th1 =cv2.cvtColor(newimg, cv2.COLOR_BGR2RGB)
 i = 0
+#cv2.imshow('abc',th1)
 global start_timer
-from tkinter import Tk
-root = Tk()
-width = root.winfo_screenwidth()
-height = root.winfo_screenheight()
-print(width,height)
 start_timer = time.time()
 while True:
     i = i + 1
@@ -28,37 +27,30 @@ while True:
     Print_Screen = ImageGrab.grab()
     Print_Numpy = np.array(Print_Screen)
     x,y,w,h = bbox = (600, 460, 650, 150)
-    x1,y1,w1,h1 = 0,0,0,0
-    x1 = (x*1920)/100
-    x1 =  (x1*100)/width
-    w1 = (w*1920)/100
-    w1 =  (w1*100)/width
-
-
-    y1 = (y*1080)/100
-    y1 = (y1*100)/height
-    h1 = (h*1080)/100
-    h1 = (h1*100)/height
-    croped = Print_Numpy[int(y1):int(y1)+int(h1), int(x1):int(x1)+int(w1)]
+    croped = Print_Numpy[y:y+h, x:x+w]
+    #th2 = cv2.Canny(croped,threshold1 =200,threshold2 = 300)
     th2 = cv2.cvtColor(croped, cv2.COLOR_BGR2RGB)
+    #cv2.imshow('abc1',th2)
     iar = np.array(th1)
     iar2 = np.array(th2)
     matched_arrays = 0
     x = 0      
-    while (x < h1):
+    while (x < 150):
         y = 0
-        while (y < w1 ):   
+        while (y < 650 ):   
             if (iar[x][y] == iar2[x][y]).all():
+                #print ("match")
                 matched_arrays = matched_arrays + 1
             y  = y + 1
         x = x + 1
         if x == iar.size:
             break
-    percent = (matched_arrays / (h1*w1)) * 100
+    percent = (matched_arrays / 97500) * 100
     if percent > 90:
         PressKey(Enter)
-        print(int(percent),"%")
+        print(percent)
+        print("Matched")
         time.sleep(3)
-print("Number of time loop ran: "+i)
+print("number of time loop ran: ",i)
 
 
